@@ -1,0 +1,25 @@
+def valid(n):
+    if n:
+        r_is_valid, r_max_val, r_min_val = valid(n.right)
+        l_is_valid, l_max_val, l_min_val = valid(n.left)
+        if r_is_valid and l_is_valid and (not l_max_val or l_max_val <= n.val) and (not r_min_val or r_min_val > n.val):
+            ret = True, (l_min_val or n.val), (r_max_val or n.val)
+        else:
+            ret = False, None, None
+    else:
+        ret = True, None, None
+    print(ret)
+    return ret
+
+class Solution:
+    def isValidBST(self, root: TreeNode) -> bool:
+        ret,_,_ = valid(root)
+        return ret
+
+# leetcode submit region end(Prohibit modification and deletion)
+
+# total_testcases:75
+# total_correct:63
+# input_formatted:[5,1,4,null,null,3,6]
+# expected_output:false
+# code_output:true

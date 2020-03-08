@@ -1,0 +1,37 @@
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        h = height
+        i = 0
+        j = 0
+
+        area = 0
+
+        while i < len(h) and j < len(h):
+            j = i+1
+            while j < len(h) and h[j] < h[i]:
+                j += 1
+            if j != len(h):
+                x = i + 1
+                while x < j:
+                    area += h[i] - h[x]
+                    x += 1
+                i = j
+            else:
+                rightmost_max_loc = i
+
+        i = len(h) - 1
+        j = len(h) - 1
+        while i >= rightmost_max_loc and j >= rightmost_max_loc:
+            j = i-1
+            while j >= rightmost_max_loc and h[j] < h[i]:
+                j -= 1
+            x = i - 1
+            while x > j:
+                area += h[i] - h[x]
+                x -= 1
+            i = j
+        return area
+
+
+# runtime_error:Line 24: UnboundLocalError: local variable 'rightmost_max_loc' referenced before assignment
+# last_testcase:[]

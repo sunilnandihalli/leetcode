@@ -1,0 +1,30 @@
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+def lca(r, nodes_to_find):
+    if r is not None:
+        lval, l_nodes_found = lca(r.left, nodes_to_find)
+        if not all(l_nodes_found):
+            rval, r_nodes_found = lca(r.right, nodes_to_find)
+            if all(r_nodes_found):
+                return rval, r_nodes_found
+            else:
+                return r, [x or y for x, y in zip(l_nodes_found, r_nodes_found)]
+        else:
+            return lval, l_nodes_found
+    else:
+        return None, [False] * len(nodes_to_find)
+
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        return lca(root, [p, q])[0]
+
+# total_testcases:31
+# total_correct:18
+# input_formatted:[3,5,1,6,2,0,8,null,null,7,4], 5, 4
+# expected_output:5
+# code_output:3

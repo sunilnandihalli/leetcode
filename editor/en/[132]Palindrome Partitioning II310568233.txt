@@ -1,0 +1,36 @@
+from functools import lru_cache
+
+
+def test():
+    ts = [('', 0), ('b', 0), ('aba', 0), ('aab', 1), ('a', 0), ('abaab', 1), ('baaba', 1), ('abacaba', 0)]
+    for s, ans in ts:
+        sol = Solution()
+        actual = sol.minCut(s)
+        print(s, ans, actual)
+        assert ans == actual
+
+
+@lru_cache(None)
+def mpc(s):
+    if s == s[::-1]:
+        m = 0
+    else:
+        m = len(s) - 1
+        for i in range(1, len(s)):
+            m = min(mpc(s[:i]) + mpc(s[i:]) + 1, m)
+    return m
+
+
+class Solution:
+    def minCut(self, s: str) -> int:
+        return mpc(s)
+
+# runtime:N/A
+# memory:N/A
+# total_testcases:29
+# total_correct:26
+# input_formatted:
+# expected_output:
+# code_output:null
+# runtime_error:null
+# last_testcase:"apjesgpsxoeiokmqmfgvjslcjukbqxpsobyhjpbgdfruqdkeiszrlmtwgfxyfostpqczidfljwfbbrflkgdvtytbgqalguewnhvvmcgxboycffopmtmhtfizxkmeftcucxpobxmelmjtuzigsxnncxpaibgpuijwhankxbplpyejxmrrjgeoevqozwdtgospohznkoyzocjlracchjqnggbfeebmuvbicbvmpuleywrpzwsihivnrwtxcukwplgtobhgxukwrdlszfaiqxwjvrgxnsveedxseeyeykarqnjrtlaliyudpacctzizcftjlunlgnfwcqqxcqikocqffsjyurzwysfjmswvhbrmshjuzsgpwyubtfbnwajuvrfhlccvfwhxfqthkcwhatktymgxostjlztwdxritygbrbibdgkezvzajizxasjnrcjwzdfvdnwwqeyumkamhzoqhnqjfzwzbixclcxqrtniznemxeahfozp"

@@ -1,0 +1,48 @@
+from functools import lru_cache
+
+
+class Solution:
+    @lru_cache(None)
+    def cmatch(self, x):
+        return (lambda c: True) if x == '.' else (lambda c: x == c)
+
+    @lru_cache(None)
+    def rmatch(self, si, pi):
+        s = self.s
+        if si == len(s) and pi == len(self.pattern_matcher):
+            return True
+        elif pi == len(self.pattern_matcher):
+            return False
+        pat = self.pattern_matcher[pi]
+        cmatch = self.cmatch(pat[0])
+        if len(pat) == 2:
+            if self.rmatch(si, pi + 1):
+                return True
+            while si < len(s) and cmatch(s[si]):
+                if self.rmatch(si + 1, pi + 1):
+                    return True
+                si += 1
+            return False
+        else:
+            return True if cmatch(s[si]) and self.rmatch(si + 1, pi + 1) else False
+
+    def isMatch(self, s: str, p: str) -> bool:
+        si = 0
+        pi = 0
+        pattern_matcher = []
+        while pi < len(p):
+            if pi + 1 < len(p) and p[pi + 1] == '*':
+                pattern_matcher.append(p[pi:pi + 2])
+                pi += 2
+            else:
+                pattern_matcher.append(p[pi])
+                pi += 1
+        print(pattern_matcher)
+        self.pattern_matcher = pattern_matcher
+        self.s = s
+        return self.rmatch(0, 0)
+
+
+
+# runtime_error:Line 27: IndexError: string index out of range
+# last_testcase:"ab" ".*c"
