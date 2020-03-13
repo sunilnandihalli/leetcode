@@ -16,7 +16,7 @@
 # Input:
 # s = "catsanddog"
 # wordDict = ["cat", "cats", "and", "sand", "dog"]
-# Output:
+# Output:a
 # [
 #   "cats and dog",
 #   "cat sand dog"
