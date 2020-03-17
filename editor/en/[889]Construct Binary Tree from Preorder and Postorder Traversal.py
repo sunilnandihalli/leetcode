@@ -28,10 +28,8 @@
 
 
 class TreeNode(object):
-    def __init__(self, v, l, r):
+    def __init__(self, v):
         self.val = v
-        self.left = l
-        self.right = r
 
 
 def toTree(arr, s):
@@ -56,7 +54,10 @@ def gen_tree(cur_val, new_node_prob=1.0):
     if random() < new_node_prob:
         left_node, next_val = gen_tree(cur_val + 1, new_node_prob * f)
         right_node, next_val = gen_tree(next_val, new_node_prob * f)
-        return TreeNode(cur_val, left_node, right_node), next_val
+        tr = TreeNode(cur_val)
+        tr.left = left_node
+        tr.right = right_node
+        return tr, next_val
     else:
         return None, cur_val
 
@@ -71,29 +72,39 @@ def render_helper(node, g):
             render_helper(node.right, g)
             g.edge(str(node.val), str(node.right.val))
 
+
 def render(tree, name):
     g = Digraph(comment=name)
     render_helper(tree, g)
     g.render(name, '/home/sunilsn/leetcode/graphs')
 
+
 def preorder(tree):
     return [tree.val] + preorder(tree.left) + preorder(tree.right) if tree else []
 
+
 def postorder(tree):
     return postorder(tree.left) + postorder(tree.right) + [tree.val] if tree else []
+
 
 null = None
 
 
 def test():
     for n in range(10):
-        cur_tree,_ = gen_tree(1)
+        cur_tree, _ = gen_tree(1)
         pre_tree = preorder(cur_tree)
         post_tree = postorder(cur_tree)
         print(pre_tree, post_tree)
         render(cur_tree, 'tree_%d' % n)
+        s = Solution()
+        reconstructed_tree = s.constructFromPrePost(pre_tree, post_tree)
+        assert preorder(reconstructed_tree) == pre_tree
+        assert postorder(reconstructed_tree) == post_tree
+
 
 from typing import List
+
 
 # leetcode submit region begin(Prohibit modification and deletion)
 # Definition for a binary tree node.
@@ -103,7 +114,28 @@ from typing import List
 #         self.left = None
 #         self.right = None
 
+def prepost(pre, post, post_index, s_pre, e_pre, s_post, e_post):
+    if s_pre < e_pre:
+        node = TreeNode(pre[s_pre])
+        ls_pre = s_pre + 1
+        le_post = post_index[pre[ls_pre]] + 1 if ls_pre < e_pre else e_post - 1
+        le_pre = ls_pre + (le_post - s_post)
+        ls_post = s_post
+        node.left = prepost(pre, post, post_index, ls_pre, le_pre, ls_post, le_post)
+        rs_pre = le_pre
+        re_pre = e_pre
+        rs_post = le_post
+        re_post = e_post - 1
+        node.right = prepost(pre, post, post_index, rs_pre, re_pre, rs_post, re_post)
+        return node
+    else:
+        return None
+
+
 class Solution:
     def constructFromPrePost(self, pre: List[int], post: List[int]) -> TreeNode:
-        pass
+        post_index = {x: i for i, x in enumerate(post)}
+        n = len(pre)
+        return prepost(pre, post, post_index, 0, n, 0, n)
+
 # leetcode submit region end(Prohibit modification and deletion)
