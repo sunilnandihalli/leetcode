@@ -38,6 +38,36 @@
 # d you optimize it? 
 #  
 #  Related Topics Heap Design
+from statistics import median
+from random import randint
+
+
+def test():
+    last_n = 5
+    x = MedianFinder(last_n)
+    l = []
+    for _ in range(1000):
+        num = randint(0, 999)
+        l.append(num)
+        x.addNum(num)
+        expected = median(l[-last_n:])
+        actual = x.findMedian()
+        print(len(l), x, l, expected, actual)
+        assert expected == actual
+
+
+def st():
+    last_n = 5
+    ts = [712, 434, 292, 358, 73, 830, 664, 815]
+    mf = MedianFinder(last_n)
+    l = []
+    for x in ts:
+        mf.addNum(x)
+        l.append(x)
+        expected = median(l[-last_n:])
+        actual = mf.findMedian()
+        print(len(l), mf, l, expected, actual)
+        assert expected == actual
 
 
 # leetcode submit region begin(Prohibit modification and deletion)
@@ -64,14 +94,16 @@ class MedianFinder:
         if self.max_heap_count > 0:
             neg_num, index = self.max_heap[0]
             while index < self.last_valid_index:
-                neg_num, index = h.heappop(self.max_heap)
+                h.heappop(self.max_heap)
+                neg_num, index = self.max_heap[0]
             return -neg_num, index
 
     def peek_min_heap(self):
         if self.min_heap_count > 0:
             num, index = self.min_heap[0]
             while index < self.last_valid_index:
-                num, index = h.heappop(self.min_heap)
+                h.heappop(self.min_heap)
+                num, index = self.min_heap[0]
             return num, index
 
     def pop_max_heap_element(self):
@@ -107,7 +139,11 @@ class MedianFinder:
                 self.push_max_heap_element(num, index)
 
     def __repr__(self):
-        return '{} {}'.format(self.max_heap, self.min_heap)
+        return 'max_heap {} min_heap {} last_valid_index {} max_heap_count {} min_heap_count {}'.format(self.max_heap,
+                                                                                                        self.min_heap,
+                                                                                                        self.last_valid_index,
+                                                                                                        self.max_heap_count,
+                                                                                                        self.min_heap_count)
 
     def remove_oldest_element(self):
         v_max, i_max = self.peek_max_heap()
@@ -137,6 +173,7 @@ class MedianFinder:
                 self.push_min_heap_element(num, self.added_count)
         else:
             self.push_max_heap_element(num, self.added_count)
+        self.elems[self.added_count] = num
         self.added_count += 1
         self.rebalance()
 
