@@ -176,18 +176,18 @@ def decrement_iterator(iter):
             if dir == right:
                 return True, iter[:-2]
             elif dir == left:
-                return False, []
+                return False, iter
         else:
-            return False, []
+            return False, iter
     else:
-        return False, []
+        return False, iter
 
 def increment_iterator(iter):
     if len(iter) > 0:
         r = iter[-1]
         if r.right:
             return iter + [right] + begin_iterator(r.right)
-        e
+        else:
 
 class Solution:
     def recoverTree(self, root: TreeNode) -> None:

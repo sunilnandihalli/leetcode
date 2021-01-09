@@ -31,5 +31,21 @@
 # leetcode submit region begin(Prohibit modification and deletion)
 class Solution:
     def reverse(self, x: int) -> int:
-        
+        max_int = 2 ** 31 - 1
+        min_int = -max_int - 1
+        if x < min_int or x > max_int:
+            return 0
+        if x < 0:
+            neg = True
+            x = -x
+        else:
+            neg = False
+
+        ret = 0
+        while x > 0:
+            x, d = divmod(x, 10)
+            ret = ret * 10 + d
+        ret *= (-1 if neg else 1)
+        return 0 if ret < min_int or ret > max_int else ret
+
 # leetcode submit region end(Prohibit modification and deletion)
